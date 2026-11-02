@@ -3,11 +3,11 @@
     ║                           ACQ HUB                                 ║
     ║                   Game Module: Fortune Fighters                   ║
     ║                   PlaceId: 16212191055                            ║
-    ║                   Theme: Liquid Glass (Fluent Acrylic)            ║
+    ║                   UI: Fluent-Modded (StyearX)                     ║
     ╚═══════════════════════════════════════════════════════════════════╝
 ]]
 
--- 1. CLEANUP & TEARDOWN PREVIOUS INSTANCE (LIVE-RELOAD SAFE)
+-- 1. TEARDOWN PREVIOUS INSTANCE (LIVE-RELOAD SAFE)
 if getgenv()._ACQ_HUB_CLEANUP then
     pcall(getgenv()._ACQ_HUB_CLEANUP)
     getgenv()._ACQ_HUB_CLEANUP = nil
@@ -22,11 +22,6 @@ local cleaner = {
 local function addConnection(conn)
     table.insert(cleaner.connections, conn)
     return conn
-end
-
-local function addTask(th)
-    table.insert(cleaner.tasks, th)
-    return th
 end
 
 -- Services
@@ -52,17 +47,18 @@ local state = {
     originalFogEnd = Lighting.FogEnd,
 }
 
--- 2. LOAD FLUENT UI LIBRARY
-local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+-- 2. LOAD FLUENT-MODDED (StyearX)
+local Fluent = loadstring(game:HttpGet("https://raw.githubusercontent.com/StyearX/Fluent-modded/main/dist/main.lua"))()
 
--- 3. CREATE WINDOW (LIQUID GLASS / ACRYLIC THEME)
+-- 3. CREATE WINDOW
 local Window = Fluent:CreateWindow({
     Title = "acq hub",
-    SubTitle = "Fortune Fighters | Liquid Glass",
-    TabWidth = 160,
-    Size = UDim2.fromOffset(600, 480),
-    Acrylic = true,            -- Authentic frosted liquid glass blur
-    Theme = "Dark",            -- Modern dark glass base
+    SubTitle = "Fortune Fighters",
+    TabWidth = 150,
+    Size = UDim2.fromOffset(580, 480),
+    Acrylic = true,
+    Theme = "Dark",
+    Search = true,
     MinimizeKey = Enum.KeyCode.LeftControl,
 })
 
@@ -98,7 +94,7 @@ local function fullCleanup()
     if Fluent and not Fluent.Unloaded then
         pcall(function() Fluent:Destroy() end)
     end
-    print("[acq hub] Gracefully torn down and cleaned.")
+    print("[acq hub] Closed and cleaned.")
 end
 
 getgenv()._ACQ_HUB_CLEANUP = fullCleanup
@@ -115,7 +111,7 @@ local Tabs = {
 -- ==================== DASHBOARD TAB ====================
 do
     Tabs.Main:AddParagraph({
-        Title = "acq hub — Liquid Glass Edition",
+        Title = "acq hub",
         Content = string.format("User: %s (@%s)\nGame: [🤠] Fortune Fighters\nPlace ID: %d", LocalPlayer.DisplayName, LocalPlayer.Name, game.PlaceId),
     })
 
@@ -143,7 +139,7 @@ end
 -- ==================== PLAYER TAB ====================
 do
     -- WalkSpeed Slider & Toggle
-    local SpeedToggle = Tabs.Player:AddToggle("SpeedToggle", {
+    Tabs.Player:AddToggle("SpeedToggle", {
         Title = "Enable Custom WalkSpeed",
         Default = false,
         Callback = function(val)
@@ -155,7 +151,7 @@ do
         end,
     })
 
-    local SpeedSlider = Tabs.Player:AddSlider("SpeedSlider", {
+    Tabs.Player:AddSlider("SpeedSlider", {
         Title = "WalkSpeed",
         Description = "Adjust character movement speed",
         Default = 16,
@@ -171,7 +167,7 @@ do
     })
 
     -- JumpPower Slider & Toggle
-    local JumpToggle = Tabs.Player:AddToggle("JumpToggle", {
+    Tabs.Player:AddToggle("JumpToggle", {
         Title = "Enable Custom JumpPower",
         Default = false,
         Callback = function(val)
@@ -183,7 +179,7 @@ do
         end,
     })
 
-    local JumpSlider = Tabs.Player:AddSlider("JumpSlider", {
+    Tabs.Player:AddSlider("JumpSlider", {
         Title = "JumpPower",
         Description = "Adjust character jump height",
         Default = 50,
@@ -199,7 +195,7 @@ do
     })
 
     -- Infinite Jump
-    local InfJump = Tabs.Player:AddToggle("InfJump", {
+    Tabs.Player:AddToggle("InfJump", {
         Title = "Infinite Jump",
         Description = "Allows jumping repeatedly in mid-air",
         Default = false,
@@ -215,7 +211,7 @@ do
     end))
 
     -- Noclip
-    local NoclipToggle = Tabs.Player:AddToggle("NoclipToggle", {
+    Tabs.Player:AddToggle("NoclipToggle", {
         Title = "Noclip",
         Description = "Walk through walls and barriers",
         Default = false,
@@ -315,8 +311,8 @@ end
 do
     -- Acrylic Blur Toggle
     Tabs.Settings:AddToggle("AcrylicToggle", {
-        Title = "Liquid Glass Acrylic Blur",
-        Description = "Enable or disable frosted glass blur effect",
+        Title = "Acrylic Blur",
+        Description = "Enable or disable background blur effect",
         Default = true,
         Callback = function(val)
             pcall(function() Fluent:ToggleAcrylic(val) end)
@@ -326,7 +322,7 @@ do
     -- Transparency Toggle
     Tabs.Settings:AddToggle("TransparencyToggle", {
         Title = "Window Transparency",
-        Description = "Enable translucent glass backdrop",
+        Description = "Enable translucent window backdrop",
         Default = true,
         Callback = function(val)
             pcall(function() Fluent:ToggleTransparency(val) end)
@@ -336,7 +332,7 @@ do
     -- Theme Selector
     Tabs.Settings:AddDropdown("ThemeDropdown", {
         Title = "UI Theme",
-        Description = "Choose a color scheme for the glass layout",
+        Description = "Choose a color scheme for the interface",
         Values = { "Dark", "Darker", "Aqua", "Amethyst", "Rose", "Light" },
         Default = "Dark",
         Callback = function(themeName)
@@ -350,9 +346,7 @@ do
         Description = "Key used to show/hide the hub",
         Default = "LeftControl",
         Mode = "Toggle",
-        Callback = function()
-            -- Fluent handles minimization automatically via Window.MinimizeKey
-        end,
+        Callback = function() end,
     })
 
     -- Hub Unload Button
@@ -370,8 +364,8 @@ Window:SelectTab(1)
 
 Fluent:Notify({
     Title = "acq hub",
-    Content = "Liquid Glass Hub loaded successfully! Press LeftControl to toggle.",
+    Content = "Loaded successfully! Press LeftControl to toggle.",
     Duration = 5,
 })
 
-print("[acq hub] Fortune Fighters module loaded successfully with Liquid Glass Fluent theme.")
+print("[acq hub] Fortune Fighters module loaded successfully with Fluent-modded.")
