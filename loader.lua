@@ -5,7 +5,7 @@
     ║                                                                   ║
     ║  Loadstring:                                                      ║
     ║  loadstring(game:HttpGet("https://raw.githubusercontent.com/      ║
-    ║    <username>/acq-hub/main/loader.lua"))()                        ║
+    ║    zay-aan/acqhub/main/loader.lua"))()                            ║
     ╚═══════════════════════════════════════════════════════════════════╝
 ]]
 
@@ -13,10 +13,9 @@ local HUB_NAME = "acq hub"
 local HUB_VERSION = "1.0.0"
 
 -- GitHub Repository Configuration
--- Replace 'GITHUB_USER' and 'GITHUB_REPO' with your GitHub username & repository name
 local REPO_CONFIG = {
-    Owner = "GITHUB_USER",
-    Repo = "acq-hub",
+    Owner = "zay-aan",
+    Repo = "acqhub",
     Branch = "main",
 }
 

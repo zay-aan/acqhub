@@ -9,7 +9,7 @@ Centralized, universal Roblox Script Hub architecture featuring automatic game d
 Execute the universal loader below in your executor. The loader automatically detects the current game via `PlaceId` / `UniverseId` and loads the appropriate dedicated script.
 
 ```lua
-loadstring(game:HttpGet("https://raw.githubusercontent.com/<OWNER>/acq-hub/main/loader.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/zay-aan/acqhub/main/loader.lua"))()
 ```
 
 ---
